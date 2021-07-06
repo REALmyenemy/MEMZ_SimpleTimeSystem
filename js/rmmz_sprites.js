@@ -1,5 +1,5 @@
 //=============================================================================
-// rmmz_sprites.js v1.1.0
+// rmmz_sprites.js v1.0.0
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -1141,7 +1141,7 @@ Sprite_Enemy.prototype.revertToNormal = function() {
 };
 
 Sprite_Enemy.prototype.updateWhiten = function() {
-    const alpha = 128 - (16 - this._effectDuration) * 8;
+    const alpha = 128 - (16 - this._effectDuration) * 10;
     this.setBlendColor([255, 255, 255, alpha]);
 };
 
@@ -1424,9 +1424,6 @@ Sprite_Animation.prototype.targetPosition = function(renderer) {
 
 Sprite_Animation.prototype.targetSpritePosition = function(sprite) {
     const point = new Point(0, -sprite.height / 2);
-    if (this._animation.alignBottom) {
-        point.y = 0;
-    }
     sprite.updateTransform();
     return sprite.worldTransform.apply(point);
 };
@@ -2154,11 +2151,7 @@ Sprite_Gauge.prototype.gaugeHeight = function() {
 };
 
 Sprite_Gauge.prototype.gaugeX = function() {
-    if (this._statusType === "time") {
-        return 0;
-    } else {
-        return this.measureLabelWidth() + 6;
-    }
+    return this._statusType === "time" ? 0 : 30;
 };
 
 Sprite_Gauge.prototype.labelY = function() {
@@ -2437,11 +2430,6 @@ Sprite_Gauge.prototype.setupLabelFont = function() {
     this.bitmap.textColor = this.labelColor();
     this.bitmap.outlineColor = this.labelOutlineColor();
     this.bitmap.outlineWidth = this.labelOutlineWidth();
-};
-
-Sprite_Gauge.prototype.measureLabelWidth = function() {
-    this.setupLabelFont();
-    return this.bitmap.measureTextWidth(this.label());
 };
 
 Sprite_Gauge.prototype.labelOpacity = function() {

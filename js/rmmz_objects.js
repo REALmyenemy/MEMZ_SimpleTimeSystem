@@ -1,5 +1,5 @@
 //=============================================================================
-// rmmz_objects.js v1.1.0
+// rmmz_objects.js v1.0.0
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -3342,10 +3342,6 @@ Game_Battler.prototype.requestMotionRefresh = function() {
     this._motionRefresh = true;
 };
 
-Game_Battler.prototype.cancelMotionRefresh = function() {
-    this._motionRefresh = false;
-};
-
 Game_Battler.prototype.select = function() {
     this._selected = true;
 };
@@ -4710,7 +4706,7 @@ Game_Actor.prototype.makeActionList = function() {
 Game_Actor.prototype.makeAutoBattleActions = function() {
     for (let i = 0; i < this.numActions(); i++) {
         const list = this.makeActionList();
-        let maxValue = -Number.MAX_VALUE;
+        let maxValue = Number.MIN_VALUE;
         for (const action of list) {
             const value = action.evaluate();
             if (value > maxValue) {
@@ -6337,11 +6333,11 @@ Game_Map.prototype.isOverworld = function() {
 };
 
 Game_Map.prototype.screenTileX = function() {
-    return Math.round((Graphics.width / this.tileWidth()) * 16) / 16;
+    return Graphics.width / this.tileWidth();
 };
 
 Game_Map.prototype.screenTileY = function() {
-    return Math.round((Graphics.height / this.tileHeight()) * 16) / 16;
+    return Graphics.height / this.tileHeight();
 };
 
 Game_Map.prototype.adjustX = function(x) {
@@ -8192,11 +8188,11 @@ Game_Player.prototype.isCollided = function(x, y) {
 };
 
 Game_Player.prototype.centerX = function() {
-    return ($gameMap.screenTileX() - 1) / 2;
+    return (Graphics.width / $gameMap.tileWidth() - 1) / 2.0;
 };
 
 Game_Player.prototype.centerY = function() {
-    return ($gameMap.screenTileY() - 1) / 2;
+    return (Graphics.height / $gameMap.tileHeight() - 1) / 2.0;
 };
 
 Game_Player.prototype.center = function(x, y) {

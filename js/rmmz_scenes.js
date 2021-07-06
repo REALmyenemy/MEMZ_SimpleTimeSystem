@@ -1,5 +1,5 @@
 //=============================================================================
-// rmmz_scenes.js v1.1.0
+// rmmz_scenes.js v1.0.0
 //=============================================================================
 
 //-----------------------------------------------------------------------------
@@ -1509,8 +1509,7 @@ Scene_ItemBase.prototype.itemTargetActors = function() {
 };
 
 Scene_ItemBase.prototype.canUse = function() {
-    const user = this.user();
-    return user && user.canUse(this.item()) && this.isItemEffectsValid();
+    return this.user().canUse(this.item()) && this.isItemEffectsValid();
 };
 
 Scene_ItemBase.prototype.isItemEffectsValid = function() {
