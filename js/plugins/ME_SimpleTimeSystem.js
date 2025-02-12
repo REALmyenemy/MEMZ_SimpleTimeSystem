@@ -159,65 +159,59 @@ Imported.ME_SimpleTimeSystem = "0.5.0";
 
 var me_sts_systemInitialize = Game_System.prototype.initialize;
 var me_sts_parameters = PluginManager.parameters('ME_SimpleTimeSystem');
-var me_sts_refreshRate=parseInt(me_sts_parameters["lengthS"]);
+var me_sts_refreshRate = parseInt(me_sts_parameters["lengthS"]);
 
 
-PluginManager.registerCommand("ME_SimpleTimeSystem","dump",args => {
-	
-	if (args)
-	{
-		var time=args["time"];
-		var value=args["variableId"];
-		
-		if (time&&value)
-		{
-			time=time.toLowerCase();
-			if (time[time.length-1]==s)
-				time=time.substring(0, time.length - 1);
-			value=Number.parseInt(value);
-			var result=$gameSystem.me_clock.get(time);
-			
-			$gameVariables.setValue(value,result ? result : 0);
+PluginManager.registerCommand("ME_SimpleTimeSystem", "dump", args => {
+
+	if (args) {
+		let time = args["time"];
+		let value = args["variableId"];
+
+		if (time && value) {
+			time = time.toLowerCase();
+			if (time[time.length - 1] == s)
+				time = time.substring(0, time.length - 1);
+			value = Number.parseInt(value);
+			let result = $gameSystem.me_clock.get(time);
+
+			$gameVariables.setValue(value, result ? result : 0);
 		}
 	}
 });
 
-PluginManager.registerCommand("ME_SimpleTimeSystem","set",args => {
-	
-	if (args)
-	{
-		var time=args["time"];
-		var value=args["number"];
-		
-		if (time&&value)
-		{
-			time=time.toLowerCase();
-			if (time[time.length-1]==s)
-				time=time.substring(0, time.length - 1);
-			value=Number.parseInt(value);
+PluginManager.registerCommand("ME_SimpleTimeSystem", "set", args => {
 
-			$gameSystem.me_clock.set(time,value);
-			$gameSystem.me_clock._frames=0;
+	if (args) {
+		let time = args["time"];
+		let value = args["number"];
+
+		if (time && value) {
+			time = time.toLowerCase();
+			if (time[time.length - 1] == s)
+				time = time.substring(0, time.length - 1);
+			value = Number.parseInt(value);
+
+			$gameSystem.me_clock.set(time, value);
+			$gameSystem.me_clock._frames = 0;
 		}
 	}
 });
 
-PluginManager.registerCommand("ME_SimpleTimeSystem","setvar",args => {
-	
-	if (args)
-	{
-		var time=args["time"];
-		var value=args["variableId"];
-		
-		if (time&&value)
-		{
-			time=time.toLowerCase();
-			if (time[time.length-1]==s)
-				time=time.substring(0, time.length - 1);
-			value=Number.parseInt(value);
+PluginManager.registerCommand("ME_SimpleTimeSystem", "setvar", args => {
 
-			$gameSystem.me_clock.set(time,$gameVariables.value(value) ? $gameVariables.value(value):0);
-			$gameSystem.me_clock._frames=0;
+	if (args) {
+		let time = args["time"];
+		let value = args["variableId"];
+
+		if (time && value) {
+			time = time.toLowerCase();
+			if (time[time.length - 1] == s)
+				time = time.substring(0, time.length - 1);
+			value = Number.parseInt(value);
+
+			$gameSystem.me_clock.set(time, $gameVariables.value(value) ? $gameVariables.value(value) : 0);
+			$gameSystem.me_clock._frames = 0;
 		}
 	}
 });
@@ -226,16 +220,16 @@ PluginManager.registerCommand("ME_SimpleTimeSystem","setvar",args => {
 
 
 
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
 	me_sts_systemInitialize.call(this);
-	this.me_clock=new ME_Clock();
+	this.me_clock = new ME_Clock();
 };
 
 function ME_Clock() {
 	this.initialize(...arguments);
 }
 
-ME_Clock.prototype.initialize = function() {
+ME_Clock.prototype.initialize = function () {
 	this._seconds = parseInt(me_sts_parameters['second']);
 	this._mins = parseInt(me_sts_parameters['minute']);
 	this._hours = parseInt(me_sts_parameters['hour']);
@@ -243,88 +237,82 @@ ME_Clock.prototype.initialize = function() {
 	this._month = parseInt(me_sts_parameters['month']);
 	this._year = parseInt(me_sts_parameters['year']);
 	this._frames = 0;
-    this._working = false;
+	this._working = false;
 };
 
-ME_Clock.prototype.update = function(sceneActive)
-{
+ME_Clock.prototype.update = function (sceneActive) {
 	if (sceneActive && this._working) {
 		this._frames++;
-		if (this._frames>me_sts_refreshRate)
-		{
-			this._frames=0; 
-			this.increase("second",1)
+		if (this._frames > me_sts_refreshRate) {
+			this._frames = 0;
+			this.increase("second", 1)
 		}
 	}
 };
 
-ME_Clock.prototype.start = function() {
-    this._frames = 0;
-    this._working = true;
+ME_Clock.prototype.start = function () {
+	this._frames = 0;
+	this._working = true;
 };
 
-ME_Clock.prototype.pause = function() {
-    this._working = false;
+ME_Clock.prototype.pause = function () {
+	this._working = false;
 };
 
-ME_Clock.prototype.isWorking = function() {
-    return this._working;
+ME_Clock.prototype.isWorking = function () {
+	return this._working;
 };
 
 
-
-Scene_Map.prototype.updateMain = function() {
-    $gameMap.update(this.isActive());
+//!!! change into variable
+Scene_Map.prototype.updateMain = function () {
+	$gameMap.update(this.isActive());
 	$gamePlayer.update(this.isPlayerActive());
 	$gameSystem.me_clock.update(this.isActive());
-    $gameTimer.update(this.isActive());
-    $gameScreen.update();
+	$gameTimer.update(this.isActive());
+	$gameScreen.update();
 };
-
-Scene_Battle.prototype.update = function() {
-    const active = this.isActive();
+//!!! change into variable
+Scene_Battle.prototype.update = function () {
+	const active = this.isActive();
 	$gameTimer.update(active);
 	$gameSystem.me_clock.update(active);
-    $gameScreen.update();
-    this.updateVisibility();
-    if (active && !this.isBusy()) {
-        this.updateBattleProcess();
-    }
-    Scene_Message.prototype.update.call(this);
+	$gameScreen.update();
+	this.updateVisibility();
+	if (active && !this.isBusy()) {
+		this.updateBattleProcess();
+	}
+	Scene_Message.prototype.update.call(this);
 };
 
 
 
-ME_Clock.prototype.set = function(time,value)
-{
-	var ammount=parseInt(value)
-	switch(typeof time === "string" ? this.internalValue(time):time)
-	{
+ME_Clock.prototype.set = function (time, value) {
+	let ammount = parseInt(value)
+	switch (typeof time === "string" ? this.internalValue(time) : time) {
 		case 0:
-			this._seconds=ammount;
+			this._seconds = ammount;
 			break;
 		case 1:
-			this._mins=ammount;
+			this._mins = ammount;
 			break;
 		case 2:
-			this._hours=ammount;
+			this._hours = ammount;
 			break;
 		case 3:
-			this._day=ammount;
+			this._day = ammount;
 			break;
 		case 4:
-			this._month=ammount;
+			this._month = ammount;
 			break;
 		case 5:
-			this._year=ammount;
+			this._year = ammount;
 			break;
 	}
 };
 
-ME_Clock.prototype.get = function(time)
-{
-	switch(typeof time === "string" ? this.internalValue(time):time)
-	{
+ME_Clock.prototype.get = function (time) {
+	switch (typeof time === "string" ? this.internalValue(time) : time) {
 		case 0:
 			return this._seconds;
 		case 1:
@@ -340,21 +328,32 @@ ME_Clock.prototype.get = function(time)
 	}
 };
 
-ME_Clock.prototype.internalValue = function(variable)
-{
-	switch (variable)
-	{
+ME_Clock.prototype.internalValue = function (variable) {
+	switch (variable) {
 		case "second":
+		case "seconds":
+		case "ss":
 			return 0;
 		case "minute":
+		case "minutes":
+		case "mm":
 			return 1;
 		case "hour":
+		case "hours":
+		case "hh":
 			return 2;
 		case "day":
+		case "days":
+		case "dd":
 			return 3;
 		case "month":
+		case "months":
+		case "MM":
 			return 4;
 		case "year":
+		case "years":
+		case "YY":
+		case "YYYY":
 			return 5;
 		case 0:
 			return "second";
@@ -371,62 +370,53 @@ ME_Clock.prototype.internalValue = function(variable)
 	}
 };
 
-ME_Clock.prototype.increase = function(time, ammount) {
-	var timeNumber;
-	var timeString;
-	if (typeof time === "string")
-	{
-		timeString=time;
-		timeNumber=this.internalValue(time);
+ME_Clock.prototype.increase = function (time, ammount) {
+	let timeNumber;
+	let timeString;
+	if (typeof time === "string") {
+		timeString = time;
+		timeNumber = this.internalValue(time);
 	}
-	else
-	{
-		timeString=this.internalValue(time);
-		timeNumber=time;
+	else {
+		timeString = this.internalValue(time);
+		timeNumber = time;
 	}
-	var fragment = this.get(timeNumber);
-	fragment+=ammount;
-	if (timeString!="year")
-	{
-		var duration = me_sts_parameters[timeString+'sDuration'];
-		while (fragment>duration)
-		{
-			fragment-=duration;
-			this.increase(timeNumber+1,1);
+	let fragment = this.get(timeNumber);
+	fragment += ammount;
+	if (timeString != "year") {
+		let duration = me_sts_parameters[timeString + 'sDuration'];
+		while (fragment > duration) {
+			fragment -= duration;
+			this.increase(timeNumber + 1, 1);
 		}
 	}
-	this.set(timeNumber,fragment);
+	this.set(timeNumber, fragment);
 
 };
 
-ME_Clock.prototype.decrease = function(time, ammount) {
-	var timeNumber;
-	var timeString;
-	if (typeof time === "string")
-	{
-		timeString=time;
-		timeNumber=this.internalValue(time);
+ME_Clock.prototype.decrease = function (time, ammount) {
+	let timeNumber;
+	let timeString;
+	if (typeof time === "string") {
+		timeString = time;
+		timeNumber = this.internalValue(time);
 	}
-	else
-	{
-		timeString=this.internalValue(time);
-		timeNumber=time;
+	else {
+		timeString = this.internalValue(time);
+		timeNumber = time;
 	}
-	if (timeString!="")
-	{
-		var fragment = this.get(timeNumber);
-		fragment-=ammount;
-		if (timeString!="year")
-		{
-			var duration = parseInt(me_sts_parameters[timeString+'sDuration']);
-			
-			while (fragment < (timeNumber < 3 ? 0 : 1) )
-			{
-				fragment+=duration;
-				this.decrease(timeNumber+1,1);
+	if (timeString != "") {
+		let fragment = this.get(timeNumber);
+		fragment -= ammount;
+		if (timeString != "year") {
+			let duration = parseInt(me_sts_parameters[timeString + 'sDuration']);
+
+			while (fragment < (timeNumber < 3 ? 0 : 1)) {
+				fragment += duration;
+				this.decrease(timeNumber + 1, 1);
 			}
-			
+
 		}
-		this.set(timeNumber,fragment);
-		}
+		this.set(timeNumber, fragment);
+	}
 }; 
